@@ -1,0 +1,16 @@
+{
+  "authentication": {
+    "private": false
+  },
+  "authorization": [
+    "orders"
+  ],
+  "fileUpload": true,
+  "filter": [
+    {
+      "entity": "users",
+      "fields": [
+        "id",
+        "username"
+  ]}]
+}
