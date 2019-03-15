@@ -1,16 +1,11 @@
-
-
-
-
+var fs = require('fs');
 const jsonServer = require('json-server');
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
 const fileUpload = require('express-fileupload');
-const addAuth = require('./auth');
-const addFileUpload = require('./images');
 const session = require('express-session');
-
+const Auth = require('./auth');
 
 // PeerJS
 const ExpressPeerServer = require('peer').ExpressPeerServer;
@@ -23,7 +18,7 @@ app_ps.on('connection', function(id) {
 
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
-server.use(fileUpload())
+server.use(fileUpload());
 server.use(session({
     secret: '63?gdº93!6dg36dºb36%Vv57V%c$%/(!V497',
     resave: true,
@@ -32,24 +27,19 @@ server.use(session({
 }));
 server.use(jsonServer.bodyParser);
 
-app_jsonserver = require('express').Router();
-addAuth(app_jsonserver, router.db);
-addFileUpload(app_jsonserver);
-app_jsonserver.use(router);
+let config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
+let configuredRouter = Auth.configure(router, config);
 
-// Use default router
-server.use('/api', app_jsonserver);
-
+server.use('/api', configuredRouter);
 
 http_server = require('http').createServer(server);
 
 // Web Sockets
-const io = require('socket.io')(http_server)
+const io = require('socket.io')(http_server);
 io.on('connection', function(socket){
     console.log('Websocket connection')
-})
-
+});
 
 http_server.listen(3000, () => {
     console.log('JSON Server is running')
