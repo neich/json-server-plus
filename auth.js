@@ -93,7 +93,7 @@ const Auth = {
                     else if (user.password === req.body.password) {
                         req.session.userId = user.id;
                         req.session.username = user.username;
-                        util.jsonResponse(res, {id: user.id})
+                        util.jsonResponse(res, {id: user.id, username: user.username})
                     } else
                         util.sendError(res, 400, util.Error.ERR_BAD_REQUEST, 'Password do not match')
                 } else
