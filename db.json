@@ -51,5 +51,17 @@
       "userId": 3,
       "description": "My other order"
     }
+  ],
+  "files": [
+    {
+      "id": 1,
+      "userId": 1,
+      "filename": "json_logo.png"
+    },
+    {
+      "filename": "ac793700f322a3760ebfffc88cf76af3.jpeg",
+      "userId": 1,
+      "id": 2
+    }
   ]
 }
