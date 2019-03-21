@@ -3,7 +3,6 @@ const jsonServer = require('json-server');
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
-const fileUpload = require('express-fileupload');
 const session = require('express-session');
 const Auth = require('./auth');
 
@@ -18,7 +17,6 @@ app_ps.on('connection', function(id) {
 
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
-server.use(fileUpload());
 server.use(session({
     secret: '63?gdº93!6dg36dºb36%Vv57V%c$%/(!V497',
     resave: true,
@@ -41,7 +39,9 @@ io.on('connection', function(socket){
     console.log('Websocket connection')
 });
 
-http_server.listen(3000, () => {
-    console.log('JSON Server is running')
+let port = config.port || 3000;
+
+http_server.listen(port, () => {
+    console.log('JSON Server is running on port ' + port)
 });
 
