@@ -5,12 +5,16 @@
   "authorization": [
     "orders"
   ],
-  "fileUpload": true,
+  "fileUpload": {
+    "dest": "data",
+    "keepNames": true
+  },
   "filter": [
     {
       "entity": "users",
       "fields": [
         "id",
         "username"
-  ]}]
+  ]}],
+  "port": 3000
 }
