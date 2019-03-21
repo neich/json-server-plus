@@ -19,7 +19,16 @@ const configSchema = {
             }
         },
         fileUpload: {
-            type: 'boolean'
+            type: 'object',
+            properties: {
+                dest: {
+                    type: 'string',
+                    required: true
+                },
+                keepNames: {
+                    type: 'boolean'
+                }
+            }
         },
         filter: {
             type: 'array',
@@ -39,6 +48,9 @@ const configSchema = {
                     }
                 }
             }
+        },
+        port: {
+            type: 'number'
         }
 
     }
@@ -200,7 +212,7 @@ const Auth = {
         }
 
         if (config.fileUpload)
-            addFileUpload(configuredRouter);
+            addFileUpload(configuredRouter, router.db, config.fileUpload);
 
         if (config.filter)
             for (let f of config.filter)
