@@ -1,6 +1,6 @@
 const validate = require('jsonschema').validate;
 const util = require('./util');
-const addFileUpload = require('./images');
+const addFileUpload = require('./files');
 
 const configSchema = {
     properties: {
