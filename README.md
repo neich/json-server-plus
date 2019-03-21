@@ -73,13 +73,14 @@ This field contains an array of string corresponding to the entities that we wan
 
 #### `fileUpload`
 
-If this filed is true, two new endpoints are added:
+This field has to be an object. If it is present, a new endpoint `files` is created to upload and download binary files. The object must contain a filed `dest` with a relative path to an existing folder where all files will be stored. The object may also contain a boolean field `keepNames` if yu want the files stored with the same name they get in the multi-part body.
 
-`POST /images`
 
-It uploads a file in a multi-part body.
+`POST /files`
 
-`GET /images/:filename`
+It uploads a set of files in a multi-part body. It returns an array of filenames as stored in the server.
+
+`GET /files/:filename`
 
 If returns the file with name `filename`.
 
