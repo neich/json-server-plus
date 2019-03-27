@@ -13,15 +13,15 @@
       "id": 2
     },
     {
-      "username": "",
-      "email": "",
-      "password": "",
+      "username": "userA",
+      "email": "userA@example.com",
+      "password": "userA",
       "id": 3
     },
     {
-      "username": "kk",
-      "email": "kk",
-      "password": "kk",
+      "username": "userB",
+      "email": "userB@example.com",
+      "password": "userB",
       "id": 4
     }
   ],
@@ -60,7 +60,7 @@
     },
     {
       "filename": "ac793700f322a3760ebfffc88cf76af3.jpeg",
-      "userId": 1,
+      "userId": 2,
       "id": 2
     }
   ]
