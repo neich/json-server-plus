@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.24/peerjs.min.js"></script>
+    <title>json-server-plus with PeerJS</title>
+</head>
+<body>
+
+<div>
+    <h3>Choose user</h3>
+    <form id="userForm">
+        <label>
+            <input class="userClass" type="radio" value="userA" name="user"/>User A</label>
+        <label>
+            <input class="userClass" type="radio" value="userB" name="user"/>User B</label>
+    </form>
+    <span>Logged as: </span><span id="loggedUser">unknown</span>
+</div>
+
+<div>
+    <input id="msg" type="text"/>
+    <button id="btnSend">Send PJS message</button>
+</div>
+
+<div>
+    <button id="btnPJSUsers">Get PS users</button>
+</div>
+
+<div>
+    <span>PJS users:</span>
+    <ul id="pjsusers"></ul>
+
+</div>
+
+
+<div>
+    <p>PJS messages:</p>
+    <p>Connected to : <span id="connectedUser">null</span></p>
+    <ul id="messages"></ul>
+</div>
+
+<script>
+    function initPJS(username) {
+        if (!username) {
+            console.log("No usrnbae provided for PeerJS connection");
+            return;
+        }
+
+        var peer = new Peer(username, {host: 'localhost', port: 3000, path: '/peerjs', key: 'exapp'});
+
+        var lastPeerid = null;
+        var userConnected = null;
+        var conn = null;
+
+        peer.on('open', function (id) {
+            // Workaround for peer.reconnect deleting previous id
+            if (peer.id === null) {
+                console.log('Received null id from peer open');
+                peer.id = lastPeerId;
+            } else {
+                lastPeerId = peer.id;
+            }
+            console.log('ID: ' + peer.id);
+        });
+
+
+        peer.on('connection', function(conn) {
+            $('#connectedUser').text(userConnected);
+            conn.on('data', function (data) {
+                $('#messages').append('<li>Message from ' + userConnected + ': ' + JSON.stringify(data) + '</li>');
+            })
+        });
+        // var socket = io();
+        // socket.on('message', function (data) {
+        //     $('#messages').append('<li>WS message from ' + data.from + ' : ' + data.message + '</li>');
+        // });
+        //
+        $('#btnPJSUsers').click(function () {
+            fetch('/peerjs/peerjs/peers', {
+                method: 'GET', // or 'PUT'
+                credentials: "same-origin"
+            })
+                .then(res => res.json())
+                .then(function(json) {
+                    if (json instanceof Array) {
+                        $('#pjsusers').empty();
+                        for (var i = 0; i < json.length; i++) {
+                            $('#pjsusers').append('<li>User: ' + json[i] + '<button data-user="' + json[i] + '">Connect</button></li>');
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        $('#pjsusers').click('button', function(event) {
+            var user = $(event.target).data('user');
+            console.log('Connecting to user: ' + user);
+            conn = peer.connect(user);
+
+            conn.on('open', function() {
+                userConnected = user;
+                // Receive messages
+                conn.on('data', function(data) {
+                    console.log('Received', data);
+                });
+
+                // Send messages
+                conn.send('Hello!');
+            });
+        });
+
+        $('#btnSend').click(function () {
+            conn.send({message: $('#msg').val(), dest: $('input[name=user]:not(:checked)').val()})
+        });
+
+
+    }
+
+
+    $(function () {
+        $('.userClass').prop('checked', false);
+
+        $('input[name=user]').change(function() {
+            var val = $('input[name=user]:checked').val();
+            fetch('/api/users/login', {
+                method: 'POST', // or 'PUT'
+                credentials: "same-origin",
+                body: JSON.stringify({username: val, password: val}), // data can be `string` or {object}!
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(function (res) {
+                    if (res.status != 200) {
+                        return fetch('/api/users/self').then(res => res.json())
+                    }
+                    return res.json();
+                })
+                .then(function(json) {
+                    $('#loggedUser').text(json.username);
+                    initPJS(json.username);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+
+
+
+
+    });
+</script>
+</body>
+</html>
