@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <title>Hello PEW</title>
+</head>
+<body>
+
+<div>
+    <h3>Choose user</h3>
+    <form id="userForm">
+        <label>
+            <input class="userClass" type="radio" value="userA" name="user"/>User A</label>
+        <label>
+            <input class="userClass" type="radio" value="userB" name="user"/>User B</label>
+    </form>
+    <span>Logged as: </span><span id="loggedUser">unknown</span>
+</div>
+
+<div>
+    <input id="msg" type="text"/>
+    <button id="btnWS">Send WS message</button>
+</div>
+
+
+<div>
+    <span>WS messages:</span>
+    <ul id="messages"></ul>
+</div>
+
+<script>
+    function initWS() {
+        var socket = io();
+        socket.on('message', function (data) {
+            $('#messages').append('<li>WS message from ' + data.from + ' : ' + data.message + '</li>');
+        });
+
+        $('#btnWS').click(function () {
+            socket.emit('message', {message: $('#msg').val(), dest: $('input[name=user]:not(:checked)').val()})
+        });
+
+    }
+
+
+    $(function () {
+        $('.userClass').prop('checked', false);
+
+        $('input[name=user]').change(function() {
+            var val = $('input[name=user]:checked').val();
+            fetch('/api/users/login', {
+                method: 'POST', // or 'PUT'
+                credentials: "same-origin",
+                body: JSON.stringify({username: val, password: val}), // data can be `string` or {object}!
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(function(json) {
+                    $('#loggedUser').text(json.username);
+                    initWS();
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+    });
+</script>
+</body>
+</html>
