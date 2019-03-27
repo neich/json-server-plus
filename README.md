@@ -6,7 +6,8 @@ This version adds:
 
 - Authentication using express-session. Sign in, sign out, and sign up
 - Authorization. You can configure some routes to be private. Only users that are signed in and are the owners of the entities can accss them
-- PeerJS server. Access [´peerjs-server´](https://github.com/peers/peerjs-server) functionality at ´/peerjs´  
+- PeerJS server. Access [peerjs-server](https://github.com/peers/peerjs-server) functionality at ´/peerjs´
+- Websockets server using [socket.io](https://socket.io/)
 
 Prerequisites:
 
@@ -87,3 +88,7 @@ If returns the file with name `filename`.
 #### `filter`
 
 This feature allows to have restricted access to entities that you do not own. For those entities, only the fields specified in the array `fields` will be displayed. This feature should not be used at the same time that `authorization` with the same entity.
+
+#### `service`
+
+This feature allows to start two additional services: [peerjs](https://peerjs.com/) and [socket.io](https://socket.io/). Accepted values are `peerjs` and `ws`. There are two files in the `public` folder to test the services: `index_ws.html` and `index_peerjs.html`.
