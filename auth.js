@@ -51,6 +51,10 @@ const configSchema = {
         },
         port: {
             type: 'number'
+        },
+        service: {
+            type: 'string',
+            pattern: '(peerjs|ws)'
         }
 
     }
