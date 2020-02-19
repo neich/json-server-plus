@@ -12,12 +12,11 @@ This version adds:
 Prerequisites:
 
 * [Nodejs](https://nodejs.org) installed
-* [Yarn](https://yarnpkg.com) installed
 
 
 To run the application:
 
-- Execute `yarn install`
+- Execute `npm install`
 - Execute `npm run start`
 - The API is ready at `http://localhost:3000/api`
 - The peerjs service is ready at `http://localhost:3000/peerjs`
