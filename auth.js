@@ -113,7 +113,7 @@ const Auth = {
                     } else
                         util.sendError(res, 400, util.Error.ERR_BAD_REQUEST, 'Password do not match')
                 } else
-                    util.jsonResponse(res, 'User <' + req.body.username + '> does not exists')
+                    util.sendError(res, 400, util.Error.ERR_AUTHENTICATION, 'User <' + req.body.username + '> does not exists')
             }
         });
 
